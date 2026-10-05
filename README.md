@@ -48,7 +48,26 @@ Add screenshots to `docs/screenshots/` using these filenames. The images will ap
 
 ## 1. Desktop app
 
-The PyInstaller build is a folder distribution. Start `FSOC Control Center.exe` from `dist/FSOC Control Center/` after building. Keep the complete folder together because the executable uses the bundled resources beside it.
+The PyInstaller build is a folder distribution. To build and open it on Windows:
+
+1. Open PowerShell in the project folder.
+2. Activate your virtual environment, if you created one:
+
+   ```powershell
+   .venv\Scripts\Activate.ps1
+   ```
+
+3. Build the app (install PyInstaller first if needed):
+
+   ```powershell
+   python -m pip install pyinstaller
+   pyinstaller main.spec
+   ```
+
+4. Wait for PyInstaller to finish, then open `dist\FSOC Control Center\` in File Explorer.
+5. Double-click `FSOC Control Center.exe` to launch the app.
+
+Keep the entire `FSOC Control Center` folder together; the executable needs the bundled files beside it. The first launch can take longer while the app initializes. If Windows displays a security prompt for an unsigned executable, choose **More info** and then **Run anyway** only if you trust the build source.
 
 ## 2. Run from source
 

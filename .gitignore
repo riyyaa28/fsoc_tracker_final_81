@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Virtual environments
+venv/
+.venv/
+.env
+.env.*
+!.env.example
+
+# Node (restore with: npm install)
+node_modules/
+
+# PyInstaller / Inno Setup build output (main.spec and installer.iss stay tracked)
+build/
+dist/
+release/
+installer/
+*.zip
+
+# YOLO: generated dataset, training runs, auto-downloaded base weights.
+# beacon_yolo.pt is the trained model the app ships with, so it stays tracked.
+dataset/
+runs/
+yolo12n.pt
+
+# Runtime logs and output
+*.log
+logs/
+performance_log.csv
+
+# Claude Code session state and personal settings
+.claude/sessions/
+.claude/settings.local.json
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

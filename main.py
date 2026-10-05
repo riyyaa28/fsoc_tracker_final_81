@@ -3,6 +3,7 @@ import sys
 import re
 import json
 import threading
+
 # PyInstaller collects another copy of these DLLs in Qt's bin folder. Load
 # the application-root copies first so the loader cannot pick Qt's copy when
 # resolving Torch's native dependencies.
@@ -11,12 +12,17 @@ if getattr(sys, "frozen", False):
     import ctypes
 
     _bundle_root = getattr(sys, "_MEIPASS", os.path.dirname(sys.executable))
+
     for _runtime_name in ("vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll"):
         _runtime_path = os.path.join(_bundle_root, _runtime_name)
         if os.path.isfile(_runtime_path):
             _vc_runtime_handles.append(ctypes.WinDLL(_runtime_path))
 
-import torch  # noqa: F401  (load torch DLLs before Qt; the reverse order fails on Windows)
+    _torch_lib = os.path.join(_bundle_root, "torch", "lib")
+    if os.path.isdir(_torch_lib):
+        os.add_dll_directory(_torch_lib)
+
+import torch
 from functools import partial
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import unquote, urlsplit
@@ -26,7 +32,10 @@ from PyQt5.QtCore import QUrl, QTimer
 from PyQt5.QtGui import QDesktopServices
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget
 from PyQt5.QtWebEngineWidgets import (
-    QWebEngineDownloadItem, QWebEnginePage, QWebEngineSettings, QWebEngineView
+    QWebEngineDownloadItem,
+    QWebEnginePage,
+    QWebEngineSettings,
+    QWebEngineView,
 )
 
 # Import must happen before we build the tabs, same ordering FSOC_FINAL relied on.
@@ -85,10 +94,10 @@ class WebHandler(SimpleHTTPRequestHandler):
         request_path = unquote(urlsplit(path).path)
         if request_path.startswith("/node_modules/"):
             root = os.path.join(BASE_DIR, "node_modules")
-            relative_path = request_path[len("/node_modules/"):]
+            relative_path = request_path[len("/node_modules/") :]
         elif request_path.startswith("/ui/web3d/"):
             root = os.path.join(BASE_DIR, "ui", "web3d")
-            relative_path = request_path[len("/ui/web3d/"):]
+            relative_path = request_path[len("/ui/web3d/") :]
         else:
             return os.path.join(BASE_DIR, "__not_found__")
 
@@ -107,7 +116,9 @@ class WebHandler(SimpleHTTPRequestHandler):
     }
 
     def end_headers(self):
-        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        self.send_header(
+            "Cache-Control", "no-store, no-cache, must-revalidate, max-age=0"
+        )
         self.send_header("Pragma", "no-cache")
         super().end_headers()
 
@@ -233,8 +244,11 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def _web3d_asset_signature():
-        assets = (WEB3D_INDEX, os.path.join(BASE_DIR, "ui", "web3d", "app.js"),
-                  os.path.join(BASE_DIR, "ui", "web3d", "style.css"))
+        assets = (
+            WEB3D_INDEX,
+            os.path.join(BASE_DIR, "ui", "web3d", "app.js"),
+            os.path.join(BASE_DIR, "ui", "web3d", "style.css"),
+        )
         try:
             return tuple(os.stat(path).st_mtime_ns for path in assets)
         except OSError:
@@ -303,6 +317,7 @@ class MainWindow(QMainWindow):
 def _self_test(win, png_path):
     """Smoke test for packaged builds (FSOC_SELFTEST=<png path>): run a short
     scenario in the 2D tab, save a screenshot of the window and exit."""
+
     def start():
         win.tabs.setCurrentIndex(0)
         win.dashboard._start_simulation()
