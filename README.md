@@ -6,7 +6,6 @@ The application combines a 2D camera and tracking dashboard with a 3D airspace v
 
 ## Preview
 
-Add screenshots to `docs/screenshots/` using these filenames. The images will appear one below another, which stays readable on narrow screens.
 
 ### 2D boresight dashboard
 <img width="1917" height="1016" alt="image" src="https://github.com/user-attachments/assets/75b55240-772b-43ed-8b00-b4924f898d18" />
