@@ -37,7 +37,7 @@ Add screenshots to `docs/screenshots/` using these filenames. The images will ap
 - **Best for:** demos and everyday use
 - **Platform:** Windows build
 - **Internet:** not needed for the 2D dashboard; the 3D view currently loads Three.js from a CDN
-- **Start:** run `FSOC Control Center.exe` from the packaged output folder
+- **Start:** download `FSOC_Control_Center_Setup.exe` from [Releases](https://github.com/riyyaa28/fsoc_tracker_final_81/releases/latest), install, and launch from the Start menu
 
 ### From source
 
@@ -47,6 +47,16 @@ Add screenshots to `docs/screenshots/` using these filenames. The images will ap
 - **Start:** run `python main.py`
 
 ## 1. Desktop app
+
+### Download and install
+
+1. Go to the [latest release](https://github.com/riyyaa28/fsoc_tracker_final_81/releases/latest) and download `FSOC_Control_Center_Setup.exe`.
+2. Run the installer. It installs for the current user only, so administrator rights are not needed. You can optionally create a desktop shortcut.
+3. Launch **FSOC Control Center** from the Start menu or the desktop shortcut.
+
+The installer is large (the app bundles PyTorch, OpenCV, and Qt), so it is published as a release asset rather than committed to the repository. The executable is unsigned: if Windows SmartScreen shows a warning, choose **More info** and then **Run anyway** only if you downloaded it from this repository's Releases page. The first launch can take longer while the app initializes. To uninstall, use **Settings → Apps → Installed apps**.
+
+### Build it yourself
 
 The PyInstaller build is a folder distribution. To build and open it on Windows:
 
@@ -67,7 +77,15 @@ The PyInstaller build is a folder distribution. To build and open it on Windows:
 4. Wait for PyInstaller to finish, then open `dist\FSOC Control Center\` in File Explorer.
 5. Double-click `FSOC Control Center.exe` to launch the app.
 
-Keep the entire `FSOC Control Center` folder together; the executable needs the bundled files beside it. The first launch can take longer while the app initializes. If Windows displays a security prompt for an unsigned executable, choose **More info** and then **Run anyway** only if you trust the build source.
+Keep the entire `FSOC Control Center` folder together; the executable needs the bundled files beside it.
+
+6. Optional: package the folder into a single installer with [Inno Setup 6](https://jrsoftware.org/isinfo.php):
+
+   ```powershell
+   & "$env:LOCALAPPDATA\Programs\Inno Setup 6\ISCC.exe" installer.iss
+   ```
+
+   The installer is written to `installer\FSOC_Control_Center_Setup.exe`.
 
 ## 2. Run from source
 
@@ -160,7 +178,7 @@ python -m pip install pyinstaller
 pyinstaller main.spec
 ```
 
-The output is `dist/FSOC Control Center/`. Distribute the whole folder (for example, as a ZIP) and launch `FSOC Control Center.exe` inside it. The build is intentionally a folder distribution because the application bundles large machine-learning dependencies.
+The output is `dist/FSOC Control Center/`. The build is intentionally a folder distribution because the application bundles large machine-learning dependencies. To distribute it, build the installer with `installer.iss` (see [Build it yourself](#build-it-yourself)) and attach `installer\FSOC_Control_Center_Setup.exe` to a GitHub release. Don't commit build output: GitHub rejects files over 100 MB, and `build/`, `dist/`, and `installer/` are git-ignored.
 
 ## Project structure
 
@@ -179,7 +197,8 @@ The output is `dist/FSOC Control Center/`. Distribute the whole folder (for exam
 ├── run_scenario.py         # Scenario benchmark command-line tool
 ├── requirements.txt        # Python dependencies
 ├── package.json            # Node.js dependencies
-└── main.spec               # PyInstaller build configuration
+├── main.spec               # PyInstaller build configuration
+└── installer.iss           # Inno Setup installer script
 ```
 
 ## Troubleshooting
